@@ -20,6 +20,7 @@ services:
     depends_on:
       - database
       - smtp
+      - amqp
     volumes:
       - ${SOURCE_ROOT_FOLDER}:/app
     ports:
@@ -39,3 +40,12 @@ services:
     ports:
       - ${PORT_SMTP}:1025
       - ${PORT_MAILER}:1080
+
+  amqp:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    ports:
+      - ${PORT_AMQP}:15672
+    environment:
+      - "RABBITMQ_DEFAULT_USER=user"
+      - "RABBITMQ_DEFAULT_PASS=password"
