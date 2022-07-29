@@ -19,7 +19,9 @@ RUN apt-get install -y \
         libjpeg62-turbo-dev \
         libpng-dev \
         libzip-dev \
-        graphviz
+        graphviz \
+        librabbitmq-dev \
+        libssh-dev
 
 RUN if [ ${USER_ID:-0} -ne 0 ] && [ ${GROUP_ID:-0} -ne 0 ]; then \
     userdel -f www-data &&\
@@ -33,11 +35,11 @@ RUN if [ ${USER_ID:-0} -ne 0 ] && [ ${GROUP_ID:-0} -ne 0 ]; then \
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN pecl install apcu xdebug
+RUN pecl install apcu xdebug amqp
 
 RUN docker-php-ext-configure gd --enable-gd --with-jpeg --with-freetype
-RUN docker-php-ext-install pdo pdo_mysql zip gd intl opcache
-RUN docker-php-ext-enable apcu xdebug
+RUN docker-php-ext-install pdo pdo_mysql zip gd intl opcache bcmath sockets
+RUN docker-php-ext-enable apcu xdebug amqp
 
 COPY errors /errors
 COPY conf/vhost.conf /etc/apache2/sites-available/000-default.conf
